@@ -1,0 +1,360 @@
+#current R session
+sessionInfo()
+
+#helpfile package
+help(package = "devtools")
+browseVignettes("devtools") #more detals functions etc
+
+# Trail 2 course
+# Cancer data 
+# and call the dataset 'g'
+
+
+#clear the enviroment with all datasets within and all calculated vectors, variables :
+rm(list = ls()) # 2nd2 3ala nadafa
+
+#clear console:
+ctrl + L
+
+#load lib
+library(Hmisc)
+
+#define workind dict. 
+setwd("D:/medicine/R course/COPD Dataset")# replace \ with /, and don't forget the ""
+
+#read datast (pathway if the workind direct. is different, don't forget filenmae.csv)
+g <- read.csv(file = "D:/medicine/R course/cancer data for MOOC 1.csv", header=TRUE, sep=',')
+
+#show data
+view(g)
+
+#show summaray analysis all data 
+Hmisc::describe(Data) #:: nach einem package 
+
+#describe data by group
+library(psych)
+describe.by(g$age, g$mslauf)
+
+#add value labels 
+g$mslauf <- factor(g$mslauf, levels = c(1,2), labels = c("spms", "ppms"))
+
+#explore data:
+dim(data)# num of rows = numb of patients, num of col = numb of variables 
+
+#show names of variables
+colnames(g)
+
+#show only first 5 rows 
+head(g)
+
+#show only 6 or 7 rows
+g[1:7,]
+
+#show colume 2
+g[,2]
+
+#turn variable into object
+smoking <- g$smoking
+
+#alternative way
+smoking <- g[,'smoking']
+
+#alternative way 
+smoking <- g[,5] #as 2 is the number of column
+
+# remove object
+remove(object)/ rm(object)
+
+#remove column or variable within dataset
+Dataset$variable  <- NULL
+
+#mark a variable as category(called factor in R)
+smoking <- as.factor(g$smoking) # or instead of as.factor -> just factor
+
+# similar 
+as.numeric() # numeric
+as.integer() # categorical with no level 1,2 
+as.factor() # categorical with levels 2>
+as.logical() #true or false
+as.character() #string
+dm2 <- factor(dm, exclude = 0) #to include NA in the new variable 
+
+#remove_label_values 
+val_label(g$mslauf) <- NULL
+
+#show variable (in categories)
+table(smoking, exclude = NULL) #exclude NULL to show the missing values
+#show total
+t <- table(gender)
+addmargins(t)
+#proportion:
+prop.table(t))
+100*prop.table(t)# in %
+
+# store the tabulation for further manipulation
+t <- table(gender) 
+addmargins(t) # this will sum up the gender totals to give an overall total and print the results
+
+round(prop.table(t),digits=3) # get proportions rounded to 3dp
+round(100*prop.table(t),digits=1) # get %s rounded to 1dp
+
+#crosstable
+gmodels::CrossTable(Data$sex, Data$Progression)
+dm_by_bmi_cat <- table(bmi_cat, dm, exclude = 0)
+
+#you can add the function margin to give you the percentage in the row (margin = 1) or column (=2)
+round(100*prop.table(dm_by_bmi_cat,  margin = 2), digits = 1)
+
+#to make NA itegral part of your data() -> creat new vector/variable with exculde = 0
+dm2 <- factor(dm, exclude = 0) #resulting factor hast 3 level yes no NA 
+
+#show structure (z.B Reihenfolge)
+str(variable name)
+
+#turn variable into object 
+age -> g$age
+
+#show descriptive statistics of age
+summary(age)
+
+#for more details command mean(), sd(), range(),IQR()
+mean(FEV1, na.rm = TRUE) #na.rm=TRUE to exclude the NA, otherwise you will get error
+
+#find out the missing values 
+sum(is.na(Data$GFAP_SPlex))
+
+#draw histogram 
+hist(age)
+
+#find out missing values:
+sum(is.na(hdl))
+
+#change na to 0
+hdl.no.na <- hdl[is.na(hdl) == 0]
+
+# to show the data higher than single value (i.e. in histogram skewed to the right)
+subset(Dataset,variablename < (or >) value of interest) OR
+# AND = | in R
+subset(COPD, MWT1Best > 650 | MWT1Best < 200)
+
+#create new category by combining 2 categories 
+fruit <- g[,'fruit']
+veg <- g[,'veg']
+g$fruitveg <- fruit + veg #with the g$ it will be assined as a value in g, otherwise it can appeare as a data file alone
+table(fruitveg)
+
+#use xlab, ylab, main  to change the heading and titles 
+hist(fruitveg, xlab = "number of fruit and vegetables", ylab = "count", main = "amount of consumption")
+
+#add axis = F to remove the bars
+hist(fruitveg, xlab = "number of fruit and vegetables", ylab = "count", main = "amount of consumption", axes = F)
+
+#then add use axis function (side=1 for x, =2 for y, at = seq (form 0, till 16, with interval of 1,))
+axis(side = 1, at = seq(0,11,1))
+axis(side = 2, at = seq(0,16,1))
+
+#use ggplot
+#ggplot () = i need to plot
+# + geom_histogram = histogram
+# data=g -> your data, aes (variables included, for hitogram only x)
+#bins = wie bereit die bars sind 
+# fill = the colour inside, col = der Rahmen
+# + labs to renaim your x and y 
+# fuck me !!!!
+ggplot() + geom_histogram(data = g, aes(x = age), bins = 50, fill = 'darkblue', col = 'black') + labs (x='age variable', y='how old')
+
+#student.t.test
+t.test(Data$GFAP_SPlex ~ Data$sex, conf.level = 0.95) # value ~ group
+
+#boxplot
+boxplot(Data$NfL_SPlex ~ Data$activ_gd_confirm) #same y ~ x = value ~ group
+
+#examin correlation 
+#cor.test(x,y use = "complete.obs"#for missing values, method = "spearman/pearson" both klein geschrieben)
+cor.test(FEV1, MWT1Best, use= "complete.obs", method = "spearman")
+
+#Create Correlation matrix 
+Data_to_Correlate <- Data[, c("Age", "NfL_SPlex", "GFAP_SPlex", "AktuellerEDSS", "Disease_Duration")]
+#c = combine in einem Vector 
+#mtnsash "", hna 2ktb 2l variable mn 3'eer $
+#dann #don't forget use = 
+cor.mtx <- cor(Data_to_Correlate, use = "complete.obs", method = "spearman")
+#dann 
+cor.mtx #to view
+round(cor.mtx, 2) #round to 2 decimal 
+
+#other way with P
+library("Hmisc")
+res2 <- rcorr(as.matrix(my_data))
+
+#heatmap
+library(GGally)
+GGally::ggcorr(Data_to_corr, label = TRUE, label_size = 3)
+
+#Draw_plot, connect variables with +
+pairs(~Data$Age+Data$NfL_SPlex+Data$NfL_SPlex+Data$AktuellerEDSS+Data$activ_gd_confirm,  data = Data)
+
+#linear regression
+FEV1_MWT1Best_lm <- lm(MWT1Best~FEV1, data = COPD) #call it an object to be able to handle it 
+summary(FEV1_MWT1Best_lm) #to show the results, intercept est std. = alpha, independent (x variale)
+# = beta , pr = p values 
+# adjusted R2 = how much variance form y/dependent/ outcome variale can be explained by x/independent/predictor
+then 
+confint(FEV1_MWT1Best_lm) # 95% con inter of alpha and beta 
+#plots to asses the fittness of model 
+plot(FEV1_MWT1Best_lm)
+# first one residuals -> wolke um den 0 herum (hlw) oder skewed verteilung der Data (bad)
+# second figure q-q -> data in the middle mainly on the line -> residuals normal verteilt -> ja -> hlw, otherwise bad
+# forget about the ends of the q-q, darf bumpy sein 
+
+#lin reg for categorical(severity) or factor (gender) variables 
+#3adi
+lm_xy(outcome ~ predictor, data= data)
+#lowest category = reference, 2zn beta means -> with change from 0 to 1 
+#change reference:
+relevel(variable, ref=3)# 3 k msal #works only with factor  
+
+#add new level to categorical values (for the missing values i.e)
+levels(ethnicgroup)<-c(levels(ethnicgroup),"8") # add level 8 to the factor
+
+ethnicgroup[is.na(ethnicgroup)] <- "8" # Change NA to "None"
+
+#change value of a variable to another 
+quintile_5groups <- g[,"quintile"]
+quintile_5groups[quintile_5groups==0] <- 5
+quintile_5groups <- factor(quintile_5groups) 
+
+# creat new variable with if many variable are 1 -> 1  and if no = 0
+
+#
+#Here, comorbid will be the same length as the other variables, so:
+comorbid <- length(COPD$Diabetes)
+comorbid[COPD$Diabetes == 1 | COPD$hypertension == 1 | COPD$muscular == 1 | COPD$AtrialFib == 1 | COPD$IHD == 1] <- 1
+# take care, as vector (outside data COPD) -> if all are present -> 1, if no 101 <NA>
+#then 
+comorbid[is.na(comorbid)] <- 0
+#to change NA to 0
+# if you try with COPD$comorbid -> htlbs l 2n 2l <NA> = 2 (not 0) and the data will be leveled as 2>1
+#A7a
+
+#a7a sahla
+age_65plus <- ifelse(g[,"age"]>=65,1,0)
+
+#other a7a to create new variable
+bmi_cat <- ifelse(bmi < 18.5, "underweight", ifelse(bmi >= 18.5 & bmi <= 25, "normal", ifelse(bmi > 25 & bmi <=30, "overweight", ifelse(bmi > 30, "obese", NA))))
+
+#3rd a7a
+# initialising the age_grouped vector by copying the already existing age vector 
+age_grouped <- age 
+
+# below says: if age < 45, then label the value "under 45", if not, then keep it what it already was in age_grouped 
+age_grouped <- ifelse(age < 45, "under 45", age_grouped) 
+
+# repeat for the other categories 
+age_grouped <- ifelse(age >= 45 & age < 65, "45 - 64", age_grouped) 
+age_grouped <- ifelse(age >= 65 & age < 75, "65 - 74", age_grouped)
+age_grouped <- ifelse(age >= 75, "75 or over", age_grouped) 
+#then always do the check 
+head(cbind(age_cat, age)) #show first 5 of age_cat and age vectors combined as columens cont
+
+#multilinear regressen zwd +
+lm_MWTbest_FVC_Age <- lm(COPD$MWT1Best ~ COPD$FEV1 + COPD$AGE, data= COPD)
+
+# add binary 
+lm_MWTbest_FVC_Age_gender <- lm(COPD$MWT1Best ~ COPD$FEV1 + COPD$AGE + COPD$gender, data= COPD)
+# cave, lowest variable in the binary 'gender' = 0 will be automatically the ref. 
+
+#detect colineartiy #don't include 2 predictors which are strogly dependent on each other -> high linear correlation
+mctest::imcdiag(model.matrix(lm_GFAP_Age_Duration)[,-1], lm_GFAP_Age_Duration$model[1], method = "VIF")
+
+#lm with interaction between two factor, 'factor' added just because Atrialfib are int 
+#and we didnot convert them to factor before we start 
+#binary variables MUST be 0 and 1 not 1 and 2 or any other thing
+lm_MWTbest_D_AF <- lm(COPD$MWT1Best ~ factor(COPD$AtrialFib) + factor(COPD$Diabetes) + factor(COPD$Diabetes*COPD$AtrialFib))
+
+#interaction between binary and cont. 
+mlr2 <- lm(MWT1Best~AGE+factor(gender)+(FEV1*factor(smoking)), data=COPD)
+
+#to change the reference value in a variable (must be factor)
+relevel(COPD$smoking, ref = 2)
+
+#test relatvion between log odd of predictor and outcome BEFORE mit dem log. reg starten 
+# define chol as a continuous variable 
+chol <- g[,"chol"] 
+
+
+# create a cross tabulation of cholesterol and diabetes status  
+dm_by_chol <- table(chol, dm) # not including NA values because there aren't that many 
+# 2l tartib x,y mhm 
+
+# output the frequencies of diabetes status by cholesterol 
+dm_by_chol_prop <- prop.table(dm_by_chol, margin = 1) 
+
+# calculate the odds of having diabetes 
+odds_chol <- dm_by_chol_prop[, "yes"]/dm_by_chol_prop[, "no"] 
+
+# calculate the log odds 
+logodds_chol <- log(odds_chol) 
+
+# plot the cholesterol found in the sample against the log odds of having diabetes 
+plot(rownames(dm_by_chol_prop), logodds_chol) 
+# ziel -> plot zeigte linear nicht logaritimische Beziehung 
+
+
+#logistic regression:
+m <- glm(dm ~ gender, family = binomial(link = logit))
+summary(m)
+
+#to gett odd Ration from the logodd
+exp(exammodel$coefficients), for 95% -> exp(confint(exammodel))
+
+#how to test model fit in log reg: 1) R2 (usually not very high .. 0.15 would be not bad), 2)Hosmer-Lemeshow statistic and test:
+
+#r2: 
+run your model, then run null model with outcome ~ 1 ->
+R2 <- 1-logLik(full_model)/logLik(null_model) 
+R2
+
+#hosmer_lomeshowtest: 
+require(ResourceSelection) 
+## Loading required package: ResourceSelection 
+# design your logistic regression 
+full_model <- glm(dm ~ age + chol + insurance, family = binomial(link = logit)) 
+
+full_model$y
+
+HL <- hoslem.test(x = exammodel$y, y = fitted(exammodel), g = 10) 
+HL #note p value shall not be sig -> this means the model fits well
+
+
+#assess deviance: the higher the deviance -> model fits not that good 
+# so compare the devience of your model (with all parameters) with the deviance of the null model 
+#through 
+# analyse table of deviance 
+anova(full_model, test = "Chisq")
+# then bos 3ala el resid. dev. -> if for the null model it shall be large, with the addition of each model it shall be smaller 
+#the final value is the value in your full log model 
+#the p value when sig means the addition of this parameter improves the model 
+
+#kaplan_meyer
+library(survival)#tests
+library(survminer) # plots
+km_gender_fit <- survfit(Surv(fu_time, death) ~ gender)
+plot(km_gender_fit)
+#get estimates 
+summary(km_fit, times = c(1:7,30,60,90*(1:10))) 
+#log_rank_test
+survdiff(Surv(fu_time, death) ~ gender, rho=0) 
+#coxreg
+cox_ethnik <- coxph(Surv(g$fu_time, g$death) ~ factor(g$ethnicgroup), data = g)
+
+#test_model_fit (schienfeld residulas)
+> cox_rm_schoen <- cox.zph(cox_mr)
+> print(cox_rm_schoen)
+chisq df    p
+g$age               0.265  1 0.61
+g$ethnicgroup       0.858  4 0.93
+g$quintile          0.230  1 0.63
+as.factor(g$gender) 1.106  1 0.29
+GLOBAL              2.889  7 0.90 # good as long as p values > 0.5
+plot(cox_rm_schoen) #should look flat 
