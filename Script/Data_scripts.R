@@ -53,7 +53,9 @@ gghistogram(g, x = "GFAP_NfL", y= "..count..", combine = FALSE, ylab = "Count", 
 library(xtable)
 library(Hmisc)
 library(htmlTable)
-
+library(lattice)
+library(Formula)
+library(survival)
 
 #add corstars
 # x is a matrix containing the data
@@ -109,6 +111,9 @@ corstars <-function(x, method=c("pearson", "spearman"), removeTriangle=c("upper"
 #correlation matrix with p values in ***
 corr_table_edss_bio <- corstars(g[,c("edss","age","GFAP_singlePlex", "NfL_singlePlex", "GFAP_NfL","Disease_duration")], method = "spearman", result = "html")
 htmlTable(corr_table_edss_bio)
+my_cols <- c("red", "black") 
+pairs(g[,c("age","edss", "GFAP_singlePlex", "Nfl_log", "GFAP_NfL", "Disease_duration")], pch = 19, lower.panel = NULL, col = my_cols[g$ms_verlauf], main = "Correlation matrix, red -> PPMS, black -> SPMS")
+
 
 #calculate linear regression EDSS GFAP/NFL/Ratio
 lm_edss_gfap <- lm(g$edss_log ~ g$gfap_log + g$age + g$dis_duration_log + factor(g$sex) + factor(g$ongoing) + factor(g$ms_verlauf))
@@ -117,3 +122,6 @@ lm_edss_nfl <- lm(g$edss_log ~ g$Nfl_log + g$age + g$dis_duration_log + factor(g
 summary(lm_edss_nfl)
 lm_edss_GFAP_nfl <- lm(g$edss_log ~ g$GFAP_NfL_log + g$age + g$dis_duration_log + factor(g$sex) + factor(g$ongoing) + factor(g$ms_verlauf))
 summary(lm_edss_GFAP_nfl)
+str
+
+#comparison_Progression vs activity 
